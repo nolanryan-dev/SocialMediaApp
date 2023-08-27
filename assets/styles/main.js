@@ -40,6 +40,11 @@ const style = StyleSheet.create({
     paddingHorizontal: 28,
     marginTop: 12,
   },
+  userPostContainer: {
+    marginTop: 30,
+    height: '100%',
+    paddingHorizontal: 24,
+  },
 });
 
 export default style;
