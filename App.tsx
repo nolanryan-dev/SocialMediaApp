@@ -18,41 +18,55 @@ const App = () => {
   const data = [
     {
       firstName: 'Joseph',
-      id: 2,
+      id: 1,
     },
     {
       firstName: 'Angel',
-      id: 3,
+      id: 2,
     },
     {
       firstName: 'White',
-      id: 4,
+      id: 3,
     },
     {
       firstName: 'Olivier',
-      id: 5,
+      id: 4,
     },
     {
       firstName: 'Nolan',
-      id: 6,
+      id: 5,
     },
     {
       firstName: 'Adam',
-      id: 7,
+      id: 6,
     },
     {
       firstName: 'Michal',
-      id: 8,
+      id: 7,
     },
     {
       firstName: 'Luke',
+      id: 8,
+    },
+    {
+      firstName: 'Mike',
       id: 9,
     },
   ];
+  const pageSize = 4;
   const [pageNumber, setPageNumber] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [renderData, setRenderData] = useState([]);
+  const [renderData, setRenderData] = useState(data.slice(0, pageSize));
 
+  const pagination = (data, pageNumber, pageSize) => {
+    let startIndex = (pageNumber - 1) * pageSize;
+    console.log(startIndex);
+    if (startIndex > data.length) {
+      return [];
+    }
+    setPageNumber(pageNumber);
+    return data.slice(startIndex, startIndex + pageSize);
+  };
   return (
     <SafeAreaView>
       <ScrollView>
@@ -67,9 +81,21 @@ const App = () => {
         </View>
         <View style={style.userStoryContainer}>
           <FlatList
+            onEndReachedThreshold={0.5}
+            keyExtractor={item => item.id.toString()}
+            onEndReached={() => {
+              if (!isLoading) {
+                setIsLoading(true);
+                setRenderData(prev => [
+                  ...prev,
+                  ...pagination(data, pageNumber + 1, pageSize),
+                ]);
+                setIsLoading(false);
+              }
+            }}
             showsHorizontalScrollIndicator={false}
             horizontal={true}
-            data={data}
+            data={renderData}
             renderItem={({item}) => <UserStory firstName={item.firstName} />}
           />
         </View>
