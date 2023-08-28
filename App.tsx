@@ -1,11 +1,19 @@
-import React, {useState} from 'react';
-import {FlatList, Pressable, SafeAreaView, Text, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  Text,
+  View,
+  Dimensions,
+} from 'react-native';
 import Title from './components/Title/Title';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEnvelope} from '@fortawesome/free-regular-svg-icons';
 import style from './assets/styles/main';
 import UserStory from './components/UserStory/UserStory';
 import UserPost from './components/UserPost/UserPost';
+import { NavigationContainer } from "@react-navigation/native";
 
 const App = () => {
   const data = [
@@ -114,6 +122,15 @@ const App = () => {
     posts.slice(0, pageSizePosts),
   );
 
+  const [screenData, setScreenData] = useState(Dimensions.get('screen'));
+  console.log(screenData);
+  useEffect(() => {
+    Dimensions.addEventListener('change', result => {
+      console.log('changed screen data', result.screen);
+      setScreenData(result.screen);
+    });
+  }, []);
+
   const pagination = (data, pageNumber, pageSize, posts = false) => {
     let startIndex = (pageNumber - 1) * pageSize;
     console.log(startIndex);
@@ -129,6 +146,7 @@ const App = () => {
     return data.slice(startIndex, startIndex + pageSize);
   };
   return (
+    <NavigationContainer>
     <SafeAreaView>
       <FlatList
         ListHeaderComponent={
@@ -142,7 +160,13 @@ const App = () => {
                   size={20}
                 />
                 <View style={style.messageNumberContainer}>
-                  <Text style={style.messageNumber}>2</Text>
+                  <Text
+                    style={[
+                      style.messageNumber,
+                      {fontSize: screenData.height / 130},
+                    ]}>
+                    2
+                  </Text>
                 </View>
               </Pressable>
             </View>
@@ -200,6 +224,7 @@ const App = () => {
         )}
       />
     </SafeAreaView>
+    </NavigationContainer>
   );
 };
 
